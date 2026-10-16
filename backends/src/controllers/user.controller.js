@@ -185,9 +185,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const dashboardUser = asyncHandler(async (req, res) => {
     // get user details from req.user
-    const dasboardDetailsOfUser = await User.findById(req.user._id).select("-password -refreshToken");
-
-    return res.status(200).json(new ApiResponse(200, dasboardDetailsOfUser, "Dashboard details fetched successfully"))
+    return res.status(200).json(new ApiResponse(200, req.user, "Profile fetched successfully"));
 })
 
 const editProfile = asyncHandler(async(req, res) => {

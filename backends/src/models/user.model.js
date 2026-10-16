@@ -69,7 +69,7 @@ const userSchema = new Schema (
         }]
     }, {
         timestamps: true
-    }
+    } 
 )
 // middleware to hash password before saving to database
 userSchema.pre("save", async function() {
