@@ -1,0 +1,192 @@
+/* ---------- Expanded sidebar ---------- */
+
+.full {
+  position: sticky;
+  top: var(--header-height);
+  flex-shrink: 0;
+  width: var(--sidebar-width);
+  height: calc(100dvh - var(--header-height));
+  background: var(--color-bg);
+}
+
+.scroll {
+  height: 100%;
+  padding: 12px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.scroll:hover {
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.sectionTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 6px 12px;
+  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 40px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+}
+
+.itemLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sectionTitle:hover,
+.item:hover {
+  text-decoration: none;
+  background: var(--color-surface-muted);
+}
+
+.item.active {
+  font-weight: 600;
+  background: var(--color-surface-muted);
+}
+
+/* ---------- Collapsed (mini) rail ---------- */
+
+.mini {
+  position: sticky;
+  top: var(--header-height);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  width: var(--sidebar-mini-width);
+  height: calc(100dvh - var(--header-height));
+  padding: 4px;
+  background: var(--color-bg);
+}
+
+.miniItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 0 14px;
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+}
+
+.miniItem:hover {
+  text-decoration: none;
+  background: var(--color-surface-muted);
+}
+
+.miniItem.active {
+  font-weight: 600;
+}
+
+.miniLabel {
+  max-width: 100%;
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Overlay drawer (small screens) ---------- */
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  box-shadow: var(--shadow-md);
+  animation: slideIn 0.2s ease;
+}
+
+.drawer .scroll {
+  flex: 1;
+  height: auto;
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  height: var(--header-height);
+  padding: 0 16px;
+}
+
+.menuButton {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+
+.menuButton:hover {
+  background: var(--color-surface-muted);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.brand:hover {
+  text-decoration: none;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer {
+    animation: none;
+  }
+}

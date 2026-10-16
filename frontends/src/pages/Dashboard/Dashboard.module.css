@@ -1,0 +1,305 @@
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Banner (only when a cover image exists, like YouTube) */
+
+.banner {
+  position: relative;
+  margin-bottom: 24px;
+  aspect-ratio: 6 / 1;
+  min-height: 100px;
+  background-color: var(--color-surface-muted);
+  background-position: center;
+  background-size: cover;
+  border-radius: var(--radius-md);
+}
+
+.bannerEdit {
+  top: 12px;
+  right: 12px;
+}
+
+/* Channel header */
+
+.channelHeader {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.avatarWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 160px;
+  height: 160px;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--color-primary);
+  object-fit: cover;
+  background: var(--color-primary-soft);
+  border-radius: 50%;
+}
+
+.avatarEdit {
+  right: 6px;
+  bottom: 6px;
+}
+
+.pencilButton {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.pencilButton:disabled {
+  cursor: progress;
+}
+
+.pencilButton:hover:not(:disabled) {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.pencilButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-focus);
+}
+
+.channelInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.name {
+  overflow: hidden;
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.handle {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-surface-muted);
+  border-radius: var(--radius-full);
+  transition: background-color 0.15s ease;
+}
+
+.pill:hover {
+  text-decoration: none;
+  background: var(--color-border);
+}
+
+/* Inline variant of the pencil button, shown when there is no banner yet */
+.pillIcon {
+  position: static;
+  width: 36px;
+  height: 36px;
+  background: var(--color-surface-muted);
+  border: none;
+  box-shadow: none;
+}
+
+/* Tabs */
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tabList {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tab {
+  flex-shrink: 0;
+  min-height: 48px;
+  padding: 0 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.tab:hover {
+  color: var(--color-text);
+  border-bottom-color: var(--color-text-muted);
+}
+
+.tabActive,
+.tabActive:hover {
+  color: var(--color-text);
+  border-bottom-color: var(--color-text);
+}
+
+.searchButton {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.searchButton:hover {
+  color: var(--color-text);
+  background: var(--color-surface-muted);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-left: 6px;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-text);
+}
+
+.searchInput {
+  width: 200px;
+  min-width: 0;
+  height: 36px;
+  padding: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--color-text);
+}
+
+.searchInput::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+/* Content */
+
+.content {
+  padding-top: 24px;
+}
+
+.shelfTitle {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 24px 16px;
+}
+
+.emptyText {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+@media (max-width: 720px) {
+  .channelHeader {
+    gap: 16px;
+  }
+
+  .avatar {
+    width: 96px;
+    height: 96px;
+    font-size: 30px;
+  }
+
+  .avatarEdit {
+    right: 0;
+    bottom: 0;
+    width: 30px;
+    height: 30px;
+  }
+
+  .tab {
+    padding: 0 10px;
+  }
+
+  .searchInput {
+    width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .channelHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,30 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.code {
+  font-size: 64px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--color-primary);
+}
+
+.title {
+  font-size: 24px;
+}
+
+.text {
+  color: var(--color-text-muted);
+}
+
+.link {
+  margin-top: 12px;
+}
