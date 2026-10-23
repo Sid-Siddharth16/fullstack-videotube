@@ -4,7 +4,6 @@ import { verifyJWT, optionalJWT } from '../middlewares/auth.middleware.js';
 import { validate } from '../middlewares/validate.middleware.js';
 import { registerSchema, editProfileSchema, changePasswordSchema } from '../validators/user.validator.js';
 import { loggedOutUser, dashboardUser,loginUser, refreshAccessToken, registerUser, editProfile, changeAvatar, changeCoverImage, changePassword, getChannelProfile} from '../controllers/user.controller.js';
-import { home } from '../controllers/home.controller.js';
 
 // mounted at /api/v1/users
 const router = Router();
@@ -33,7 +32,6 @@ router.route("/login").post(
 
 router.route("/logout").post(verifyJWT, loggedOutUser)
 router.route("/refresh-token").post(refreshAccessToken)
-router.route("/home").get(verifyJWT, home)
 router.route("/profile").get(verifyJWT, dashboardUser)
 router.route("/edit-profile").patch(verifyJWT, validate(editProfileSchema), editProfile)
 router.route("/change-avatar").patch(verifyJWT, upload.single("avatar"), changeAvatar)

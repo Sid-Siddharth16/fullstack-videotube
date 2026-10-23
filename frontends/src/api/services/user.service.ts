@@ -1,15 +1,10 @@
 import { ENV } from "../../config/env.config";
 import type { ApiResponse } from "../../types/api.types";
-import type { ChangePasswordRequest, EditProfileRequest, User } from "../../types/user.types";
+import type { ChangePasswordRequest, ChannelProfile, EditProfileRequest, User } from "../../types/user.types";
 import { API_ENDPOINTS } from "../api.endpoints";
 import axiosInstance from "../axios.instance";
 
 export const userService = {
-  async getHome(signal?: AbortSignal) {
-    const { data } = await axiosInstance.get<ApiResponse<string>>(API_ENDPOINTS.USERS.HOME, { signal });
-    return data.data;
-  },
-
   async getDashboard() {
     const { data } = await axiosInstance.get<ApiResponse<User>>(API_ENDPOINTS.USERS.DASHBOARD);
     return data.data;
@@ -36,6 +31,13 @@ export const userService = {
       toImageFormData("coverImage", file),
       { timeout: ENV.UPLOAD_TIMEOUT_MS },
     );
+    return data.data;
+  },
+
+  async getChannelProfile(userName: string, signal?: AbortSignal) {
+    const { data } = await axiosInstance.get<ApiResponse<ChannelProfile>>(API_ENDPOINTS.USERS.CHANNEL(userName), {
+      signal,
+    });
     return data.data;
   },
 

@@ -1,6 +1,6 @@
 import { ENV } from "../../config/env.config";
 import type { ApiResponse } from "../../types/api.types";
-import type { UploadVideoRequest, Video } from "../../types/video.types";
+import type { FeedVideo, UploadVideoRequest, Video } from "../../types/video.types";
 import { API_ENDPOINTS } from "../api.endpoints";
 import axiosInstance from "../axios.instance";
 
@@ -39,6 +39,19 @@ export const videoService = {
 
   async getMyVideos(signal?: AbortSignal) {
     const { data } = await axiosInstance.get<ApiResponse<Video[]>>(API_ENDPOINTS.VIDEOS.MY_VIDEOS, { signal });
+    return data.data;
+  },
+
+  // Published videos from subscribed channels, owner populated
+  async getFeed(signal?: AbortSignal) {
+    const { data } = await axiosInstance.get<ApiResponse<FeedVideo[]>>(API_ENDPOINTS.VIDEOS.FEED, { signal });
+    return data.data;
+  },
+
+  async getChannelVideos(userName: string, signal?: AbortSignal) {
+    const { data } = await axiosInstance.get<ApiResponse<Video[]>>(API_ENDPOINTS.VIDEOS.CHANNEL(userName), {
+      signal,
+    });
     return data.data;
   },
 };

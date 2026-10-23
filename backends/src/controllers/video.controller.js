@@ -1,5 +1,7 @@
 
 import { Video } from "../models/video.model.js";
+import { User } from "../models/user.model.js";
+import { Subscription } from "../models/subscription.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
@@ -55,4 +57,35 @@ const getMyVideos = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, videos, "My videos fetched successfully"));
 });
 
-export { uploadVideo, getMyVideos };
+const FEED_LIMIT = 60;
+const OWNER_FIELDS = "userName fullName avatar";
+
+// home feed: published videos from channels the viewer subscribes to, newest first
+const getSubscriptionFeed = asyncHandler(async (req, res) => {
+  const channelIds = await Subscription.find({ subscriber: req.user._id }).distinct("channel");
+
+  const videos = channelIds.length
+    ? await Video.find({ owner: { $in: channelIds }, isPublished: true })
+        .sort({ createdAt: -1 })
+        .limit(FEED_LIMIT)
+        .populate("owner", OWNER_FIELDS)
+    : [];
+
+  return res.status(200).json(new ApiResponse(200, videos, "Feed fetched successfully"));
+});
+
+// another user's public channel: drafts are never exposed
+const getChannelVideos = asyncHandler(async (req, res) => {
+  const userName = req.params.userName?.trim().toLowerCase();
+
+  const channel = userName ? await User.findOne({ userName }).select("_id") : null;
+  if (!channel) {
+    throw new ApiError(404, "Channel not found");
+  }
+
+  const videos = await Video.find({ owner: channel._id, isPublished: true }).sort({ createdAt: -1 });
+
+  return res.status(200).json(new ApiResponse(200, videos, "Channel videos fetched successfully"));
+});
+
+export { uploadVideo, getMyVideos, getSubscriptionFeed, getChannelVideos };

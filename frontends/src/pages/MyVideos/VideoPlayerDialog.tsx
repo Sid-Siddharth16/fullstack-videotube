@@ -4,7 +4,7 @@ import { formatCount, formatDate } from "../../utils/format.helper";
 import styles from "./MyVideos.module.css";
 
 interface VideoPlayerDialogProps {
-  video: Video | null;
+  video: Omit<Video, "owner"> | null;
   onClose: () => void;
 }
 

@@ -1,6 +1,7 @@
 import asyncHandler from '../utils/asyncHandler.js';
 import { ApiError } from "../utils/ApiError.js"
 import { User } from "../models/user.model.js"
+import { Subscription } from "../models/subscription.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from '../utils/ApiResponse.js';
 import jwt from "jsonwebtoken"
@@ -184,8 +185,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 })
 
 const dashboardUser = asyncHandler(async (req, res) => {
-    // get user details from req.user
-    return res.status(200).json(new ApiResponse(200, req.user, "Profile fetched successfully"));
+    // get user details from req.user; subscriber count lives in the subscriptions collection
+    const subscribersCount = await Subscription.countDocuments({ channel: req.user._id });
+    return res.status(200).json(new ApiResponse(200, { ...req.user.toObject(), subscribersCount }, "Profile fetched successfully"));
 })
 
 const editProfile = asyncHandler(async (req, res) => {

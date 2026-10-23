@@ -6,16 +6,22 @@ export const API_ENDPOINTS = {
     REFRESH_TOKEN: "/users/refresh-token",
   },
   USERS: {
-    HOME: "/users/home",
     DASHBOARD: "/users/profile",
     EDIT_PROFILE: "/users/edit-profile",
     CHANGE_AVATAR: "/users/change-avatar",
     CHANGE_COVER_IMAGE: "/users/change-cover-image",
     CHANGE_PASSWORD: "/users/change-password",
+    CHANNEL: (userName: string) => `/users/channel/${encodeURIComponent(userName)}`,
   },
   VIDEOS: {
     UPLOAD: "/videos/upload",
     MY_VIDEOS: "/videos/my-videos",
+    FEED: "/videos/feed",
+    CHANNEL: (userName: string) => `/videos/channel/${encodeURIComponent(userName)}`,
+  },
+  SUBSCRIPTIONS: {
+    TOGGLE: (channelId: string) => `/subscriptions/c/${channelId}`,
+    DISCOVER: "/subscriptions/discover",
   },
 } as const;
 

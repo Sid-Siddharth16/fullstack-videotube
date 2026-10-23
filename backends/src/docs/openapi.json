@@ -19,6 +19,14 @@
     {
       "name": "User",
       "description": "Authenticated user endpoints"
+    },
+    {
+      "name": "Subscription",
+      "description": "Subscribe/unsubscribe and channel discovery"
+    },
+    {
+      "name": "Video",
+      "description": "Video feed and channel videos"
     }
   ],
   "paths": {
@@ -426,44 +434,6 @@
         }
       }
     },
-    "/users/home": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Home (protected)",
-        "description": "Simple protected route that returns a welcome message.",
-        "security": [
-          {
-            "bearerAuth": []
-          },
-          {
-            "cookieAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Welcome message",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                },
-                "example": {
-                  "statusCode": 200,
-                  "data": null,
-                  "message": "Welcome to the home route!",
-                  "success": true
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          }
-        }
-      }
-    },
     "/users/profile": {
       "get": {
         "tags": [
@@ -635,6 +605,249 @@
           }
         }
       }
+    },
+    "/subscriptions/c/{channelId}": {
+      "post": {
+        "tags": [
+          "Subscription"
+        ],
+        "summary": "Toggle subscription to a channel",
+        "description": "Subscribes the current user to the channel, or unsubscribes if already subscribed.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "channelId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "User id of the channel"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New subscription state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "isSubscribed": {
+                              "type": "boolean"
+                            },
+                            "subscribersCount": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid id, or subscribing to your own channel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Channel not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subscriptions/discover": {
+      "get": {
+        "tags": [
+          "Subscription"
+        ],
+        "summary": "Channels to discover",
+        "description": "Up to 12 other channels, most subscribed first.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Channels",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/DiscoverChannel"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/videos/feed": {
+      "get": {
+        "tags": [
+          "Video"
+        ],
+        "summary": "Subscription feed",
+        "description": "Published videos (newest first, max 60) from channels the current user subscribes to. `owner` is populated.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Feed videos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Video"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/videos/channel/{userName}": {
+      "get": {
+        "tags": [
+          "Video"
+        ],
+        "summary": "A channel's published videos",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published videos, newest first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Video"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "description": "Channel not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -762,6 +975,101 @@
                 }
               }
             }
+          }
+        }
+      },
+      "VideoOwner": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "Video": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "videoFile": {
+            "type": "string",
+            "format": "uri"
+          },
+          "thumbnail": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "number"
+          },
+          "views": {
+            "type": "integer"
+          },
+          "likes": {
+            "type": "integer"
+          },
+          "isPublished": {
+            "type": "boolean"
+          },
+          "owner": {
+            "description": "User id, or a populated VideoOwner on /videos/feed",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/VideoOwner"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "DiscoverChannel": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string",
+            "format": "uri"
+          },
+          "subscribersCount": {
+            "type": "integer"
+          },
+          "isSubscribed": {
+            "type": "boolean"
           }
         }
       }

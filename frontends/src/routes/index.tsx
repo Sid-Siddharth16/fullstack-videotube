@@ -5,6 +5,7 @@ import MainLayout from "../layouts/MainLayout";
 import NotFoundPage from "../pages/NotFound";
 import {
   ChangePasswordPage,
+  ChannelPage,
   ComingSoonPage,
   DashboardPage,
   EditProfilePage,
@@ -49,6 +50,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.WATCH_LATER, element: <ComingSoonPage title="Watch later" /> },
           { path: ROUTES.LIKED_VIDEOS, element: <ComingSoonPage title="Liked videos" /> },
           { path : ROUTES.CHANGE_PASSWORD, element: <ChangePasswordPage /> },
+          { path: ROUTES.CHANNEL, element: <ChannelPage /> },
         ],
       },
     ],

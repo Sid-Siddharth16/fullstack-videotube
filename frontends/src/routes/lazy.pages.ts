@@ -9,4 +9,5 @@ export const EditProfilePage = lazy(() => import("../pages/EditProfile"));
 export const MyVideosPage = lazy(() => import("../pages/MyVideos"));
 export const UploadVideoPage = lazy(() => import("../pages/UploadVideo"));
 export const ComingSoonPage = lazy(() => import("../pages/ComingSoon"));
+export const ChannelPage = lazy(() => import("../pages/Channel"));
 export const ChangePasswordPage = lazy(() => import("../pages/Change-Password"));

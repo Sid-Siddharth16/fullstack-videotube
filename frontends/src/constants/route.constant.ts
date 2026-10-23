@@ -14,4 +14,7 @@ export const ROUTES = {
   LOGIN: "/",
   REGISTER: "/register",
   CHANGE_PASSWORD: "/change-password",
+  CHANNEL: "/c/:userName",
 } as const;
+
+export const channelPath = (userName: string) => `/c/${encodeURIComponent(userName)}`;

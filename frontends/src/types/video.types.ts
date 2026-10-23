@@ -14,6 +14,16 @@ export interface Video {
   updatedAt: string;
 }
 
+// Owner fields populated by the feed endpoint
+export interface VideoOwner {
+  _id: string;
+  userName: string;
+  fullName: string;
+  avatar: string;
+}
+
+export type FeedVideo = Omit<Video, "owner"> & { owner: VideoOwner };
+
 export interface UploadVideoRequest {
   videoFile: File;
   thumbnail: File;
