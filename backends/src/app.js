@@ -41,13 +41,6 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/videos", videoRouter);
 app.use("/api/v1/subscriptions", subscriptionRouter);
 
-// swagger docs: UI at /api-docs, raw spec at /api-docs.json
-import swaggerUi from "swagger-ui-express";
-import { readFileSync } from "fs";
-const openapiSpec = JSON.parse(readFileSync(new URL("./docs/openapi.json", import.meta.url), "utf-8"));
-app.get("/api-docs.json", (req, res) => res.json(openapiSpec));
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openapiSpec));
-
 // error handling middleware
 import multer from "multer";
 import fs from "fs";
