@@ -1,7 +1,8 @@
 import {Router} from 'express';
 import {upload} from "../middlewares/multer.middleware.js"
-import { verifyJWT, optionalJWT } from '../middlewares/auth.middleware.js';
 import { validate } from '../middlewares/validate.middleware.js';
+import { loginRateLimit } from '../middlewares/rate-limit.middleware.js';
+import { verifyJWT, optionalJWT } from '../middlewares/auth.middleware.js';
 import { registerSchema, editProfileSchema, changePasswordSchema } from '../validators/user.validator.js';
 import { loggedOutUser, dashboardUser,loginUser, refreshAccessToken, registerUser, editProfile, changeAvatar, changeCoverImage, changePassword, getChannelProfile} from '../controllers/user.controller.js';
 
@@ -24,9 +25,7 @@ router.route("/register").post(
     registerUser
 )
 
-router.route("/login").post(
-    loginUser
-)
+router.route("/login").post(loginRateLimit, loginUser)
 
 //secured routes
 
