@@ -25,9 +25,11 @@ app.use(cookieParser())
 
 //routes import
 import userRouter from "./routes/user.routes.js";
+import videoRouter from "./routes/videos.routes.js";
 
 //routes declaration
-app.use("/api/v1", userRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/videos", videoRouter);
 
 // swagger docs: UI at /api-docs, raw spec at /api-docs.json
 import swaggerUi from "swagger-ui-express";

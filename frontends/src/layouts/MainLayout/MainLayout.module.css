@@ -14,7 +14,7 @@
 .main {
   flex: 1;
   min-width: 0;
-  max-width: var(--content-max-width);
+  /* max-width: var(--content-max-width); */
   margin: 0 auto;
   padding: 28px 16px 48px;
 }

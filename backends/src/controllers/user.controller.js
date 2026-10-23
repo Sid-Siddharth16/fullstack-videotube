@@ -188,14 +188,14 @@ const dashboardUser = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, req.user, "Profile fetched successfully"));
 })
 
-const editProfile = asyncHandler(async(req, res) => {
+const editProfile = asyncHandler(async (req, res) => {
     //edit profile steps: extract the data from req body, check the user in db , then match the thing data changed then update in db and return the updated user details
     // body already validated (trimmed/lowercased) by editProfileSchema
     const { fullName, email, userName } = req.body;
 
     const user = await User.findById(req.user._id);
 
-    if(!user){
+    if (!user) {
         throw new ApiError(404, "User not found");
     }
 
@@ -212,15 +212,15 @@ const editProfile = asyncHandler(async(req, res) => {
     }
 
     // check if the data has changed
-    if(fullName && fullName !== user.fullName){
+    if (fullName && fullName !== user.fullName) {
         user.fullName = fullName;
     }
 
-    if(email && email !== user.email){
+    if (email && email !== user.email) {
         user.email = email;
     }
 
-    if(userName && userName !== user.userName){
+    if (userName && userName !== user.userName) {
         user.userName = userName;
     }
 
@@ -229,20 +229,20 @@ const editProfile = asyncHandler(async(req, res) => {
     const updatedUser = await User.findById(user._id).select("-password -refreshToken");
 
     return res.status(200).json(new ApiResponse(200, updatedUser, "Profile updated successfully"))
-    
+
 })
 
 
 const changeAvatar = asyncHandler(async (req, res) => {
     const avatarLocalPath = req.file?.path;
 
-    if(!avatarLocalPath){
+    if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar file is required");
     }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath);
 
-    if(!avatar){
+    if (!avatar) {
         throw new ApiError(500, "Something went wrong while uploading avatar");
     }
 
@@ -257,13 +257,13 @@ const changeAvatar = asyncHandler(async (req, res) => {
 const changeCoverImage = asyncHandler(async (req, res) => {
     const coverImageLocalPath = req.file?.path;
 
-    if(!coverImageLocalPath){
+    if (!coverImageLocalPath) {
         throw new ApiError(400, "Cover image file is required");
     }
 
     const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
-    if(!coverImage){
+    if (!coverImage) {
         throw new ApiError(500, "Something went wrong while uploading cover image");
     }
 
@@ -280,17 +280,17 @@ const changePassword = asyncHandler(async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    if(!user){
+    if (!user) {
         throw new ApiError(404, "User not found");
     }
 
     const isCurrentPasswordValid = await user.isPasswordCorrect(currentPassword);
-    
-    if(!isCurrentPasswordValid){
+
+    if (!isCurrentPasswordValid) {
         throw new ApiError(400, "Current password is incorrect");
     }
 
-    if(currentPassword === newPassword){
+    if (currentPassword === newPassword) {
         throw new ApiError(400, "New password cannot be the same as the current password");
     }
 
@@ -302,8 +302,76 @@ const changePassword = asyncHandler(async (req, res) => {
 
 })
 
+//get channel profile
+const getChannelProfile = asyncHandler(async (req, res) => {
+
+    const {userName} = req.params;
+
+    if(!userName?.trim()){
+        throw new ApiError(400, "UserName is missing");
+    }
+
+    // guests have no id; null never matches a subscriber, so isSubscribed is false
+    const viewerId = req.user?._id ?? null;
+
+    // each $lookup counts / limits inside its sub-pipeline so only a number (or one _id)
+    // comes back, never the full subscription list
+    const channel = await User.aggregate([
+        {
+            $match: {userName: userName.trim().toLowerCase()}
+        },
+        {
+            $lookup: {
+                from : "subscriptions",
+                localField: "_id",
+                foreignField: "channel",
+                pipeline: [{ $count: "count" }],
+                as: "subscribers"
+            }
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "subscriber",
+                pipeline: [{ $count: "count" }],
+                as: "subscribedTo"
+            }
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "channel",
+                pipeline: [
+                    { $match: { subscriber: viewerId } },
+                    { $limit: 1 },
+                    { $project: { _id: 1 } }
+                ],
+                as: "viewerSubscription"
+            }
+        },
+        {
+            $project: {
+                fullName: 1,
+                userName: 1,
+                avatar: 1,
+                coverImage: 1,
+                // $count emits nothing for zero matches, hence the $ifNull
+                subscribersCount: { $ifNull: [{ $first: "$subscribers.count" }, 0] },
+                subscribedToCount: { $ifNull: [{ $first: "$subscribedTo.count" }, 0] },
+                isSubscribed: { $gt: [{ $size: "$viewerSubscription" }, 0] }
+            }
+        }
+    ])
+
+    if(!channel?.length){
+        throw new ApiError(404, "Channel not found");
+    }
+
+    return res.status(200).json(new ApiResponse(200, channel[0], "Channel profile fetched successfully"))
+
+})
 
 
-
-
-export { registerUser, loginUser, loggedOutUser, refreshAccessToken, dashboardUser, editProfile , changeAvatar, changeCoverImage, changePassword};
+export { registerUser, loginUser, loggedOutUser, refreshAccessToken, dashboardUser, editProfile, changeAvatar, changeCoverImage, changePassword, getChannelProfile };

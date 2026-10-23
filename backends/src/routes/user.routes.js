@@ -1,17 +1,16 @@
 import {Router} from 'express';
 import {upload} from "../middlewares/multer.middleware.js"
-import { verifyJWT } from '../middlewares/auth.middleware.js';
+import { verifyJWT, optionalJWT } from '../middlewares/auth.middleware.js';
 import { validate } from '../middlewares/validate.middleware.js';
-import { uploadVideoSchema } from '../validators/video.validator.js';
 import { registerSchema, editProfileSchema, changePasswordSchema } from '../validators/user.validator.js';
-import { loggedOutUser, dashboardUser,loginUser, refreshAccessToken, registerUser, editProfile, changeAvatar, changeCoverImage, changePassword } from '../controllers/user.controller.js';
+import { loggedOutUser, dashboardUser,loginUser, refreshAccessToken, registerUser, editProfile, changeAvatar, changeCoverImage, changePassword, getChannelProfile} from '../controllers/user.controller.js';
 import { home } from '../controllers/home.controller.js';
-import { uploadVideo, getMyVideos } from '../controllers/video.controller.js';
 
+// mounted at /api/v1/users
 const router = Router();
 
 
-router.route("/users/register").post(
+router.route("/register").post(
     upload.fields([
         {
             name: "avatar",
@@ -26,32 +25,21 @@ router.route("/users/register").post(
     registerUser
 )
 
-router.route("/users/login").post(
+router.route("/login").post(
     loginUser
 )
 
 //secured routes
 
-router.route("/users/logout").post(verifyJWT, loggedOutUser)
-router.route("/users/refresh-token").post(refreshAccessToken)
-router.route("/users/home").get(verifyJWT, home)
-router.route("/users/profile").get(verifyJWT, dashboardUser)
-router.route("/users/edit-profile").patch(verifyJWT, validate(editProfileSchema), editProfile)
-router.route("/users/change-avatar").patch(verifyJWT, upload.single("avatar"), changeAvatar)
-router.route("/users/change-cover-image").patch(verifyJWT, upload.single("coverImage"), changeCoverImage)
-router.route("/users/upload-video").post(
-    verifyJWT,
-    upload.fields([
-        { name: "videoFile", maxCount: 1 },
-        { name: "thumbnail", maxCount: 1 },
-    ]),
-    validate(uploadVideoSchema),
-    uploadVideo
-);
+router.route("/logout").post(verifyJWT, loggedOutUser)
+router.route("/refresh-token").post(refreshAccessToken)
+router.route("/home").get(verifyJWT, home)
+router.route("/profile").get(verifyJWT, dashboardUser)
+router.route("/edit-profile").patch(verifyJWT, validate(editProfileSchema), editProfile)
+router.route("/change-avatar").patch(verifyJWT, upload.single("avatar"), changeAvatar)
+router.route("/change-cover-image").patch(verifyJWT, upload.single("coverImage"), changeCoverImage)
+router.route("/change-password").patch(verifyJWT, validate(changePasswordSchema), changePassword)
 
-router.route("/users/my-videos").get(verifyJWT, getMyVideos);
+router.route("/channel/:userName").get(optionalJWT, getChannelProfile)
 
-router.route("/videos/")
-
-router.route("/users/change-password").patch(verifyJWT, validate(changePasswordSchema), changePassword)
 export default router;

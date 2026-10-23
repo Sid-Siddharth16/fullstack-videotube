@@ -14,8 +14,8 @@ export const API_ENDPOINTS = {
     CHANGE_PASSWORD: "/users/change-password",
   },
   VIDEOS: {
-    UPLOAD: "/users/upload-video",
-    MY_VIDEOS: "/users/my-videos",
+    UPLOAD: "/videos/upload",
+    MY_VIDEOS: "/videos/my-videos",
   },
 } as const;
 
